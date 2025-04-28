@@ -1,0 +1,103 @@
+//prisma schema file 
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  clerkId       String   @unique
+  email         String   @unique
+  name          String?
+  contactNumber String?
+  role          Role     @default(USER)
+  payments      Payment[]
+  orders        Order[]
+  createdAt     DateTime @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Product {
+  id            String     @id @default(cuid())
+  name          String
+  categoryId    String
+  category      Category    @relation(fields: [categoryId], references: [id])
+  description   String
+  price         Float
+  stock         Float
+  imageUrls     String[]
+  createdAt     DateTime   @default(now())
+  cartItem      CartItem[]
+  orders        Order[]
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  imageUrls   String[]
+  createdAt   DateTime @default(now())
+  products    Product[]
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    String     @unique
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        Int    @id @default(autoincrement())
+  cartId    Int
+  productId String
+  quantity  Int    @default(1)
+  cart    Cart    @relation(fields: [cartId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model Payment{
+  id            String   @id @default(uuid())
+  linkId        String   @unique
+  orderId       String?  
+  amount        Float
+  currency      String   @default("INR")
+  status        String   
+  createdAt     DateTime @default(now())
+  userId        String
+  productId     String
+  productQuantity  Int   
+  user          User     @relation(fields: [userId], references: [clerkId])
+  orders        Order[]
+}
+
+model Order{
+  id           String    @id @default(uuid())
+  amount       Float
+  productId    String
+  quantity     Int
+  userId       String
+  paymentId    String
+  createdAt    DateTime @default(now())
+  user         User      @relation(fields: [userId], references: [clerkId])
+  product      Product   @relation(fields: [productId], references: [id])
+  payment      Payment   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+}
+
+model Admin{
+  id                String     @id @default(uuid())
+  name              String
+  email             String     @unique
+  contactNumber     String
+  createdAt         DateTime   @default(now())
+}
