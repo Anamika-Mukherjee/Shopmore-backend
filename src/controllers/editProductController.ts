@@ -59,8 +59,16 @@ const editProductController = async (req: Request, res: Response)=>{
             throw new Error("Could not edit product data");
         }
 
-        //return success message if product updated in database
-        res.status(200).json({message: "Successfully updated product data"});
+        //fetch updated products
+        const updatedProducts = await prisma.product.findMany();
+
+        //throw error if updated products not fetched
+        if(!updatedProducts){
+            throw new Error("Could not fetch updated products");
+        }
+
+        //return updated products and success message if product updated in database
+        res.status(200).json({message: "Successfully updated product data", updatedProducts});
     }
     catch(err: any){
        res.status(500).json({message: err.message});

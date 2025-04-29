@@ -14,8 +14,16 @@ const deleteProductController = async (req: Request, res: Response )=>{
         where: {id}
         });
 
-       //send success message if product deleted 
-       res.status(200).json({message: "Successfully deleted product"});
+        //fetch updated products
+        const updatedProducts = await prisma.product.findMany();
+
+        //throw error if updated products not fetched
+        if(!updatedProducts){
+            throw new Error("Could not fetch updated products");
+        }
+
+       //send updated products and success message if product deleted 
+       res.status(200).json({message: "Successfully deleted product", updatedProducts});
     }
     catch(err: any){
        res.status(500).json({message: err.message});

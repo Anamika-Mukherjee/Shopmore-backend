@@ -55,13 +55,15 @@ const addProductController = async (req: Request, res: Response)=>{
             throw new Error("Could not add product data");
         }
 
+        //fetch updated products
         const updatedProducts = await prisma.product.findMany();
 
+        //throw error if updated products not fetched
         if(!updatedProducts){
             throw new Error("Could not fetch updated products");
         }
 
-        //return success message if new product stored in database
+        //return updated products and success message if new product stored in database
         res.status(200).json({message: "Successfully stored product data", updatedProducts});
     }
     catch(err: any){

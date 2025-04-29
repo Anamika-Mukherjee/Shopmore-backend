@@ -53,8 +53,16 @@ const addCategoryController = async (req: Request, res: Response)=>{
         throw new Error("Could not add category data");
        }
 
-       //return success message if new category stored in database
-       res.status(200).json({message: "Successfully stored category data"});
+       //fetch updated categories
+       const updatedCategories = await prisma.category.findMany();
+
+       //throw error if updated categories not fetched
+       if(!updatedCategories){
+        throw new Error("Could not fetch updated categories");
+       }
+
+       //return updated categories and success message if new category stored in database
+       res.status(200).json({message: "Successfully stored category data", updatedCategories});
     }
     catch(err: any){
        res.status(500).json({message: err.message});
