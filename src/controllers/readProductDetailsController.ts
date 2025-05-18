@@ -11,7 +11,10 @@ const readProductDetailsController = async (req: Request, res: Response)=>{
 
       //get product details for given product id from supabase 
        const productDetails = await prisma.product.findUnique({
-        where: {id}
+        where: {id},
+        include: {
+            category: true,
+         },
        });
 
        //if product details not fetched, throw error
