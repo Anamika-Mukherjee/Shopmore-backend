@@ -1,8 +1,6 @@
 //route handler to read product details for a given product id
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../utils/prismaClient";
 
 const readProductDetailsController = async (req: Request, res: Response)=>{
     try{

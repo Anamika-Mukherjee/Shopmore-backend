@@ -1,9 +1,7 @@
 //route handler to get product details through product ids from search results page (products searched by user) 
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../utils/prismaClient";
 import {Product} from "../utils/types";
-
-const prisma = new PrismaClient();
 
 const getSearchProductsController = async (req: Request, res: Response)=>{
     try{

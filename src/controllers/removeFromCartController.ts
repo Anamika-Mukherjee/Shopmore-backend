@@ -1,8 +1,6 @@
 //route handler to remove item from user cart from user dashboard
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../utils/prismaClient";
 
 const removeFromCartController = async (req: Request, res: Response)=>{
     try{

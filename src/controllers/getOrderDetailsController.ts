@@ -1,8 +1,6 @@
 //route handler to get all order details for a given user from user dashboard
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../utils/prismaClient";
 
 const getOrderDetailsController = async (req: Request, res: Response)=>{
     try{        

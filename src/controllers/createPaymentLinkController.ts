@@ -1,10 +1,8 @@
 //route handler to create payment link through Cashfree
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../utils/prismaClient";
 import { DateTime } from "luxon";
 import {CreateLinkResponse} from "../utils/types";
-
-const prisma = new PrismaClient();
 
 const createPaymentLinkController = async (req: Request, res: Response)=>{
     try{

@@ -1,8 +1,6 @@
 //route handler to search products entered in search bar
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../utils/prismaClient";
 
 const searchProductController = async (req: Request, res: Response)=>{
     try{        

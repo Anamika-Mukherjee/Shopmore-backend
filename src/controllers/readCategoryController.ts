@@ -1,8 +1,6 @@
 //route handler to read all product categories from admin dashboard
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../utils/prismaClient";
 
 const readCategoryController = async (req: Request, res: Response)=>{
     try{

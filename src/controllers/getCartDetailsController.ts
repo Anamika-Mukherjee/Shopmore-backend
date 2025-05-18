@@ -1,8 +1,6 @@
 //route handler to get user cart details from user dashboard
 import { Request, Response} from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../utils/prismaClient";
 
 const getCartDetailsController = async (req: Request, res: Response)=>{
     try{

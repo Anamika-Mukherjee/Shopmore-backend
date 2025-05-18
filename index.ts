@@ -1,6 +1,6 @@
 import "dotenv/config"; 
 import express, {Request, Response} from "express";
-import { PrismaClient } from '@prisma/client';
+import prisma from './src/utils/prismaClient';
 import { clerkMiddleware, clerkClient, requireAuth, getAuth } from "@clerk/express";
 import cors from "cors";
 import productRoute from "./src/routes/products";
@@ -12,20 +12,10 @@ import userRoutes from "./src/routes/user";
 const app = express();
 const port = process.env.PORT || 8000;
 
-//initialize prisma client
-const prisma = new PrismaClient();
-
-//connect to prisma database
-const connectToDatabase = async () => {
-  try {
-    await prisma.$connect();
-    console.log('Prisma connected');
-  } catch (err) {
-    console.error('Prisma connection error:', err);
-  }
-};
-
-connectToDatabase();
+process.on('SIGINT', async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});
 
 //define allowed urls for cors
 const allowedUrls = [process.env.FRONTEND_URL];

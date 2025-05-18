@@ -1,9 +1,7 @@
 //route handler to update user information from user dashboard
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../utils/prismaClient";
 import { clerk } from "../utils/clerkClient";
-
-const prisma = new PrismaClient();
 
 const updateUserInfoController = async (req: Request, res: Response)=>{
     try{

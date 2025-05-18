@@ -1,8 +1,6 @@
 //route handler to get user details through user id for given orders from admin dashboard 
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../utils/prismaClient";
 
 const getUserDetailsController = async (req: Request, res: Response)=>{
     try{

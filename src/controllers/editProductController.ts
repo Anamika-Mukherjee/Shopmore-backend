@@ -1,6 +1,6 @@
 //route handler to edit product from admin dashboard
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../utils/prismaClient";
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({ 
@@ -9,8 +9,6 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET, 
 });
 
-const prisma = new PrismaClient();
-
 const editProductController = async (req: Request, res: Response)=>{
     try{
         //get product id from request params
@@ -18,28 +16,49 @@ const editProductController = async (req: Request, res: Response)=>{
 
         //get product data from request body
         const {productName, productCategory, productDescription, productPrice, productStock} = req.body;
-    
+
         //get image files from req.files through multer
         const imageFiles = req.files as Express.Multer.File[];
 
-        //map through all image files and upload each file in cloudinary 
-        const uploadPromises = imageFiles.map((file)=>{
-            const base64String = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
-            return cloudinary.uploader.upload(base64String, {
-                folder: "products",
-            });
+    
+        //get product details from product id
+        const existingProduct = await prisma.product.findUnique({
+            where: {id}
         });
-           
-        //store the upload api response from cloudinary in a variable
-        const uploadResults = await Promise.all(uploadPromises);
 
-        //throw error if no uploadResults
-        if(!uploadResults){
-            throw new Error("Could not upload image files to cloudinary")
+        //store existing images in an array
+        const existingImages = existingProduct?.imageUrls;
+
+        //declare array to store image urls
+        let imageUrls: string[] = [];
+
+        //if product already has images, store image urls in the array declared
+        if(existingImages){
+            imageUrls = existingImages;
         }
+        
+        if(imageFiles){
+            //map through all image files and upload each file in cloudinary 
+            const uploadPromises = imageFiles.map((file)=>{
+                const base64String = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+                return cloudinary.uploader.upload(base64String, {
+                    folder: "products",
+                });
+            });
+    
+            //store the upload api response from cloudinary in a variable
+            const uploadResults = await Promise.all(uploadPromises);
 
-        //map through the cloudinary api response and retrieve image url 
-        const imageUrls = uploadResults.map((result) => result.secure_url);
+            //throw error if no uploadResults
+            if(!uploadResults){
+                throw new Error("Could not upload image files to cloudinary")
+            }
+
+            //map through the cloudinary api response and push image urls in the array declared 
+            uploadResults.map((result) => {
+                imageUrls.push(result.secure_url);
+            });  
+        }
         
         //update product in supabase through prisma with the given product details and image url
         const product = await prisma.product.update({
@@ -50,7 +69,7 @@ const editProductController = async (req: Request, res: Response)=>{
                 description: productDescription,
                 price: Number(productPrice),
                 stock: Number(productStock),
-                imageUrls
+                imageUrls 
             },
         });
 

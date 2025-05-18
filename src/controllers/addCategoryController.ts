@@ -1,6 +1,6 @@
 //route handler to add new category from admin dashboard
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../utils/prismaClient";
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({ 
@@ -8,8 +8,6 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY, 
     api_secret: process.env.CLOUDINARY_API_SECRET, 
 });
-
-const prisma = new PrismaClient();
 
 const addCategoryController = async (req: Request, res: Response)=>{
     try{

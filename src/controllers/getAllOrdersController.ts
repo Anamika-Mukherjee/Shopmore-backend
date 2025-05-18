@@ -1,8 +1,6 @@
 //route handler to get all orders by customers from admin dashboard
 import { Request, Response} from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../utils/prismaClient";
 
 const getAllOrdersController = async (req: Request, res: Response)=>{
     try{

@@ -1,9 +1,8 @@
 //route handler to assign role and store user details for recently signed up user
 import { Request, Response } from "express";
-import { PrismaClient, Role } from "@prisma/client";
+import prisma from "../utils/prismaClient";
+import { Role } from "@prisma/client";
 import { clerk } from "../utils/clerkClient";
-
-const prisma = new PrismaClient();
 
 const assignRoleController = async (req: Request, res: Response)=>{
     try{
